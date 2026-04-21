@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feedback Form</title>
+    <script>
+        function submitFeedback(event) {
+            event.preventDefault();
+            const problem = document.getElementById('problem').value;
+            const feedback = document.getElementById('feedback').value;
+
+            const feedbackEntry = { problem, feedback, date: new Date() };
+            const feedbacks = JSON.parse(localStorage.getItem('feedbacks')) || [];
+            feedbacks.push(feedbackEntry);
+            localStorage.setItem('feedbacks', JSON.stringify(feedbacks));
+            displayFeedbacks();
+            document.getElementById('feedbackForm').reset();
+        }
+
+        function displayFeedbacks() {
+            const feedbackList = document.getElementById('feedbackList');
+            feedbackList.innerHTML = '';
+            const feedbacks = JSON.parse(localStorage.getItem('feedbacks')) || [];
+            feedbacks.forEach((feedback, index) => {
+                feedbackList.innerHTML += `<li>${feedback.date}: ${feedback.problem} - ${feedback.feedback}</li>`;
+            });
+        }
+
+        window.onload = displayFeedbacks;
+    </script>
+</head>
+<body>
+    <h1>Problem and Feedback Submission</h1>
+    <form id="feedbackForm" onsubmit="submitFeedback(event)">
+        <label for="problem">Problem:</label><br>
+        <input type="text" id="problem" name="problem" required><br>
+        <label for="feedback">Feedback:</label><br>
+        <textarea id="feedback" name="feedback" required></textarea><br><br>
+        <input type="submit" value="Submit">
+    </form>
+    <h2>Submitted Feedbacks</h2>
+    <ul id="feedbackList"></ul>
+</body>
+</html>
